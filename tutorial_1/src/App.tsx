@@ -16,7 +16,6 @@ export default function App() {
   };
 
   const handleOperator = (op: string) => {
-    // If we already have an operator and aren't just changing our minds
     if (operator && !waitingForNewValue) {
       calculate();
     } else {
@@ -38,7 +37,7 @@ export default function App() {
       case '-': result = previousValue - currentValue; break;
       case '*': result = previousValue * currentValue; break;
       case '/':
-        result = currentValue === 0 ? 0 : previousValue / currentValue; // Prevent Infinity
+        result = currentValue === 0 ? 0 : previousValue / currentValue;
         break;
       default: return;
     }
@@ -56,49 +55,51 @@ export default function App() {
     setWaitingForNewValue(false);
   };
 
-  // --- Simple Inline Styles ---
-  const styles = {
-    container: { display: 'flex', justifyContent: 'center', marginTop: '50px', fontFamily: 'sans-serif' },
-    calculator: { width: '300px', backgroundColor: '#222', padding: '20px', borderRadius: '10px', boxShadow: '0 4px 10px rgba(0,0,0,0.3)' },
-    display: { backgroundColor: '#333', color: '#fff', fontSize: '2rem', padding: '15px', textAlign: 'right' as const, borderRadius: '5px', marginBottom: '15px', overflow: 'hidden' },
-    grid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' },
-    btn: { padding: '15px', fontSize: '1.2rem', cursor: 'pointer', border: 'none', borderRadius: '5px', backgroundColor: '#444', color: '#fff' },
-    btnOp: { backgroundColor: '#f39c12', color: '#fff' },
-    btnZero: { gridColumn: 'span 2' },
-    btnClear: { gridColumn: 'span 4', backgroundColor: '#e74c3c' }
-  };
+  // Helper variables for button styles to keep the JSX clean
+  const btnBase = "p-4 text-2xl font-medium rounded-xl transition-all duration-150 active:scale-95";
+  const btnNum = `${btnBase} bg-gray-700 text-white hover:bg-gray-600`;
+  const btnOp = `${btnBase} bg-orange-500 text-white hover:bg-orange-400`;
 
   return (
-      <div style={styles.container}>
-        <div style={styles.calculator}>
-          <div style={styles.display}>
+      <div className="flex justify-center items-center min-h-screen bg-gray-100 font-sans p-4">
+        <div className="w-80 bg-gray-900 p-6 rounded-3xl shadow-2xl">
+
+          {/* Calculator Display */}
+          <div className="bg-gray-800 text-white text-5xl p-5 text-right rounded-2xl mb-6 overflow-hidden tracking-wider shadow-inner font-light">
             {display}
           </div>
 
-          <div style={styles.grid}>
-            <button style={{...styles.btn, ...styles.btnClear}} onClick={handleClear}>Clear</button>
+          {/* Button Grid */}
+          <div className="grid grid-cols-4 gap-3">
+            <button
+                className={`${btnBase} col-span-4 bg-red-500 hover:bg-red-400 text-white font-bold tracking-widest uppercase text-lg`}
+                onClick={handleClear}
+            >
+              Clear
+            </button>
 
-            <button style={styles.btn} onClick={() => handleNumber('7')}>7</button>
-            <button style={styles.btn} onClick={() => handleNumber('8')}>8</button>
-            <button style={styles.btn} onClick={() => handleNumber('9')}>9</button>
-            <button style={{...styles.btn, ...styles.btnOp}} onClick={() => handleOperator('/')}>÷</button>
+            <button className={btnNum} onClick={() => handleNumber('7')}>7</button>
+            <button className={btnNum} onClick={() => handleNumber('8')}>8</button>
+            <button className={btnNum} onClick={() => handleNumber('9')}>9</button>
+            <button className={btnOp} onClick={() => handleOperator('/')}>÷</button>
 
-            <button style={styles.btn} onClick={() => handleNumber('4')}>4</button>
-            <button style={styles.btn} onClick={() => handleNumber('5')}>5</button>
-            <button style={styles.btn} onClick={() => handleNumber('6')}>6</button>
-            <button style={{...styles.btn, ...styles.btnOp}} onClick={() => handleOperator('*')}>×</button>
+            <button className={btnNum} onClick={() => handleNumber('4')}>4</button>
+            <button className={btnNum} onClick={() => handleNumber('5')}>5</button>
+            <button className={btnNum} onClick={() => handleNumber('6')}>6</button>
+            <button className={btnOp} onClick={() => handleOperator('*')}>×</button>
 
-            <button style={styles.btn} onClick={() => handleNumber('1')}>1</button>
-            <button style={styles.btn} onClick={() => handleNumber('2')}>2</button>
-            <button style={styles.btn} onClick={() => handleNumber('3')}>3</button>
-            <button style={{...styles.btn, ...styles.btnOp}} onClick={() => handleOperator('-')}>-</button>
+            <button className={btnNum} onClick={() => handleNumber('1')}>1</button>
+            <button className={btnNum} onClick={() => handleNumber('2')}>2</button>
+            <button className={btnNum} onClick={() => handleNumber('3')}>3</button>
+            <button className={btnOp} onClick={() => handleOperator('-')}>−</button>
 
-            <button style={{...styles.btn, ...styles.btnZero}} onClick={() => handleNumber('0')}>0</button>
-            <button style={styles.btn} onClick={() => handleNumber('.')}>.</button>
-            <button style={{...styles.btn, ...styles.btnOp}} onClick={() => handleOperator('+')}>+</button>
+            <button className={`${btnNum} col-span-2`} onClick={() => handleNumber('0')}>0</button>
+            <button className={btnNum} onClick={() => handleNumber('.')}>.</button>
+            <button className={btnOp} onClick={() => handleOperator('+')}>+</button>
 
-            <button style={{...styles.btn, ...styles.btnOp, gridColumn: 'span 4'}} onClick={calculate}>=</button>
+            <button className={`${btnOp} col-span-4`} onClick={calculate}>=</button>
           </div>
+
         </div>
       </div>
   );

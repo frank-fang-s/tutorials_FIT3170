@@ -1,3 +1,15 @@
+@import "tailwindcss";
+
+@layer components {
+  /* The two background states */
+  .bg-blue { @apply min-h-screen bg-blue-500 flex items-center justify-center; }
+  .bg-pink { @apply min-h-screen bg-pink-500 flex items-center justify-center; }
+  /* The Button */
+  .btn {
+    @apply bg-white px-10 py-5 rounded-full font-bold text-2xl active:scale-90 transition-all;
+  }
+}
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
