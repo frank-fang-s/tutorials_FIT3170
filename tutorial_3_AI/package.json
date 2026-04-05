@@ -1,0 +1,17 @@
+{
+  "name": "tutorial-3-ai",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.0.1"
+  },
+  "dependencies": {
+    "@google-cloud/vision": "^5.3.5"
+  }
+}
