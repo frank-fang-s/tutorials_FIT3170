@@ -51,7 +51,7 @@ cv.onRuntimeInitialized = () => {
         // Step 8: Strip the "data:image/png;base64," prefix to get raw Base64 data.
         const base64Data = imageData.replace(/^data:image\/png;base64,/, "");
 
-        const image_name = "output_lena.png";
+        const image_name = "output_writing.png";
 
         // Step 9: Write the decoded image data to disk as a PNG file.
         fs.writeFileSync(image_name, base64Data, 'base64');
@@ -67,5 +67,5 @@ cv.onRuntimeInitialized = () => {
 
     // Step 11: Load the local image file into the Image object.
     // Reading it as a Buffer triggers the onload callback above.
-    img.src = fs.readFileSync('./assets/lena.png');
+    img.src = fs.readFileSync('./assets/writing.png');
 };
