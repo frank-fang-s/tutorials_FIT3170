@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator GUI</title>
+  <style>
+    :root {
+      --bg-color: #f0f2f5;
+      --calc-bg: #1c1c1c;
+      --display-color: #ffffff;
+      --btn-num-bg: #505050;
+      --btn-num-hover: #737373;
+      --btn-action-bg: #d4d4d2;
+      --btn-action-text: #1c1c1c;
+      --btn-action-hover: #e0e0e0;
+      --btn-op-bg: #ff9500;
+      --btn-op-hover: #ffaa33;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: var(--bg-color);
+      margin: 0;
+    }
+
+    .calculator {
+      background-color: var(--calc-bg);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      width: 320px;
+    }
+
+    .display {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 10px 5px 20px;
+      word-wrap: break-word;
+      word-break: break-all;
+    }
+
+    .previous-operand {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1.2rem;
+      min-height: 1.5rem;
+    }
+
+    .current-operand {
+      color: var(--display-color);
+      font-size: 3.5rem;
+      font-weight: 300;
+      line-height: 1.1;
+      margin-top: 5px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 50px;
+      font-size: 1.5rem;
+      font-weight: 400;
+      cursor: pointer;
+      height: 65px;
+      transition: background-color 0.15s ease, filter 0.15s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+
+    button:active {
+      filter: brightness(1.3);
+    }
+
+    .btn-number {
+      background-color: var(--btn-num-bg);
+    }
+    .btn-number:hover {
+      background-color: var(--btn-num-hover);
+    }
+
+    .btn-action {
+      background-color: var(--btn-action-bg);
+      color: var(--btn-action-text);
+      font-weight: 500;
+    }
+    .btn-action:hover {
+      background-color: var(--btn-action-hover);
+    }
+
+    .btn-operator {
+      background-color: var(--btn-op-bg);
+      font-size: 1.8rem;
+    }
+    .btn-operator:hover {
+      background-color: var(--btn-op-hover);
+    }
+
+    .zero {
+      grid-column: span 2;
+      border-radius: 50px;
+      justify-content: flex-start;
+      padding-left: 28px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="calculator">
+  <div class="display">
+    <div class="previous-operand" id="previous-operand"></div>
+    <div class="current-operand" id="current-operand">0</div>
+  </div>
+  <div class="buttons">
+    <button class="btn-action" onclick="clearDisplay()">AC</button>
+    <button class="btn-action" onclick="deleteNumber()">⌫</button>
+    <button class="btn-action" onclick="chooseOperation('%')">%</button>
+    <button class="btn-operator" onclick="chooseOperation('÷')">÷</button>
+
+    <button class="btn-number" onclick="appendNumber('7')">7</button>
+    <button class="btn-number" onclick="appendNumber('8')">8</button>
+    <button class="btn-number" onclick="appendNumber('9')">9</button>
+    <button class="btn-operator" onclick="chooseOperation('×')">×</button>
+
+    <button class="btn-number" onclick="appendNumber('4')">4</button>
+    <button class="btn-number" onclick="appendNumber('5')">5</button>
+    <button class="btn-number" onclick="appendNumber('6')">6</button>
+    <button class="btn-operator" onclick="chooseOperation('−')">−</button>
+
+    <button class="btn-number" onclick="appendNumber('1')">1</button>
+    <button class="btn-number" onclick="appendNumber('2')">2</button>
+    <button class="btn-number" onclick="appendNumber('3')">3</button>
+    <button class="btn-operator" onclick="chooseOperation('+')">+</button>
+
+    <button class="btn-number zero" onclick="appendNumber('0')">0</button>
+    <button class="btn-number" onclick="appendNumber('.')">.</button>
+    <button class="btn-operator" onclick="calculate()">=</button>
+  </div>
+</div>
+
+<script>
+  const currentOperandTextElement = document.getElementById('current-operand');
+  const previousOperandTextElement = document.getElementById('previous-operand');
+
+  let currentOperand = '0';
+  let previousOperand = '';
+  let operation = undefined;
+
+  function updateDisplay() {
+    currentOperandTextElement.innerText = formatNumber(currentOperand);
+    if (operation != null) {
+      previousOperandTextElement.innerText = `${formatNumber(previousOperand)} ${operation}`;
+    } else {
+      previousOperandTextElement.innerText = '';
+    }
+  }
+
+  function formatNumber(number) {
+    if (number === 'Error') return number;
+    const stringNumber = number.toString();
+    const integerDigits = parseFloat(stringNumber.split('.')[0]);
+    const decimalDigits = stringNumber.split('.')[1];
+    let integerDisplay;
+
+    if (isNaN(integerDigits)) {
+      integerDisplay = '';
+    } else {
+      integerDisplay = integerDigits.toLocaleString('en', { maximumFractionDigits: 0 });
+    }
+
+    if (decimalDigits != null) {
+      return `${integerDisplay}.${decimalDigits}`;
+    } else {
+      return integerDisplay === '' ? '0' : integerDisplay;
+    }
+  }
+
+  function clearDisplay() {
+    currentOperand = '0';
+    previousOperand = '';
+    operation = undefined;
+    updateDisplay();
+  }
+
+  function deleteNumber() {
+    if (currentOperand === 'Error') return clearDisplay();
+    if (currentOperand === '0') return;
+    currentOperand = currentOperand.toString().slice(0, -1);
+    if (currentOperand === '') currentOperand = '0';
+    updateDisplay();
+  }
+
+  function appendNumber(number) {
+    if (currentOperand === 'Error') clearDisplay();
+    if (number === '.' && currentOperand.includes('.')) return;
+
+    if (currentOperand === '0' && number !== '.') {
+      currentOperand = number.toString();
+    } else {
+      currentOperand += number.toString();
+    }
+    updateDisplay();
+  }
+
+  function chooseOperation(op) {
+    if (currentOperand === 'Error') return;
+    if (currentOperand === '0' && previousOperand === '') return;
+    if (previousOperand !== '') {
+      // If there's already a previous operand, evaluate before adding a new operation
+      calculate();
+    }
+    operation = op;
+    previousOperand = currentOperand;
+    currentOperand = '0';
+    updateDisplay();
+  }
+
+  async function calculate() {
+    const prev = parseFloat(previousOperand);
+    const current = parseFloat(currentOperand);
+
+    if (isNaN(prev) || isNaN(current) || !operation) return;
+
+    // Convert UI symbols back to standard math operators for the API
+    let apiOperator = operation;
+    if (operation === '÷') apiOperator = '/';
+    if (operation === '×') apiOperator = '*';
+    if (operation === '−') apiOperator = '-';
+
+    try {
+      const response = await fetch('/api/calculate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ num1: prev, operator: apiOperator, num2: current }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Calculation failed');
+      }
+
+      currentOperand = String(data.result);
+      operation = undefined;
+      previousOperand = '';
+      updateDisplay();
+    } catch (err) {
+      currentOperand = 'Error';
+      operation = undefined;
+      previousOperand = '';
+      updateDisplay();
+      console.error(err);
+    }
+  }
+</script>
+
+</body>
+</html>
